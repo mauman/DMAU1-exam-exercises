@@ -1,0 +1,108 @@
+= 2016-07-04 Exam Exercises 
+:icons: font
+:sectnums:
+:sectnumlevels: 2
+:pi: pass:q[[.literal]##π##]
+:sigma: pass:q[[.literal]##σ##]
+:r: pass:q[[.literal]##r##]
+:X: ⨝
+:and: ∧
+
+****
+The following exercises and their solutions were originally authored by _Professor Maria de Marsico_, for the "Basi di Dati" exam session on July, the 4^th^, 2016.
+
+Their translation is ongoing.
+
+****
+
+== Relational Algebra
+
+[.exercise]
+--
+Consider a database with the following schema, describing theatrical performances:
+
+[source, subs="verbatim, quotes"]
+----
+THEATRE ([underline]#TheatreID#, Name, City)
+PLAY ([underline]#Title#, Author)
+PERFORMANCE ([underline]#TheatreID#, [underline]#Date#, Title)
+----
+
+NOTE: Multiple theatres, sharing the same name, can be present in different cities. Bologna and Florence both have a "Teatro Comunale", for example.
+
+Write *relational algebra expressions* for the following queries:
+
+1. Find the _names_ of the theatres, in *Rome*, where plays by *"Pirandello"* were performed in *2020*.
+
+2. Get the _names_ of the plays that were performed *exclusively* in Rome's theatres.
+--
+
+=== Answer
+
+We must identify the relations containing the needed data. We require all of them, as:
+
+* `THEATRE` provides both the cities and the theatre names we're after
+* `PLAY` holds data concerning the play's author
+* `PERFORMANCE` ties theatres and plays together
+
+The easiest query consists of *joining* the three relations and *selecting* those tuples whose city is "Rome" _and_ whose actor is "Pirandello" which _also_ are within the appropriate date range.
+
+WARNING: Pay attention to the *joins*' order, so that any two operands share a compatible attribute. In this case *natural joins* will suffice.
+
+[.answer]
+--
+Define [.literal]#r# as the relation stemming from:
+
+[.relational-algebra]
+{sigma}[.ras]##City=Roma {and} Author=Pirandello {and} Date≥01-01-2020 {and} Date≤31-12-2020## (THEATRE {X} PERFORMANCE {X} PLAY)
+
+Conclude by *projecting* on `Name`, a unique attribute within {r}:
+
+[.relational-algebra]
+{pi}[.ras]##Name## {r}
+
+Or retrieve {r} more _efficiently_ by *selecting* the relevant tuples _before_ *joining* them:
+
+[.relational-algebra]
+{sigma}[.ras]##City=Roma## THEATRE {X} {sigma}[.ras]##Date≥01-01-2020 {and} Date≤31-12-2020## PERFORMANCE {X} {sigma}[.ras]##Author=Pirandello## PLAY
+--
+
+=== Answer
+
+The attribute values within `PERFORMANCE` and `THEATRE` are sufficient to obtain the plays' titles. `PLAY` is unncessary, as it contains authors' names.
+
+While performing selections, tuples are either included _or_ discarded sequentially. Consider a join between `THEATRE` and `PERFORMANCE`, then a selection based on the resulting tuples' cities; were we to include a tuple whose city is "Rome" and whose title is "King Lear", it wouldn't be possible to remove it when we encounter a subsequent tuple with an equal title but a different city.
+
+TIP: This class of relational algebra problems is best handled with *subtractions*. The tuples that _don't_ meet the selection criteria are first collected and then removed from the set of all the candidate tuples.
+
+[.answer]
+--
+Let us define {r} which gathers the titles of all the plays that *weren't* performed in Rome:
+
+* *join* `THEATRE` and `PERFORMANCE`, whose data are essential
+* *select* the tuples whose `City` attribute is *different* from _Rome_
+* *project* on `Title`
+
+[.relational-algebra]
+{pi}[.ras]##Title## {sigma}[.ras]##City≠Rome## (THEATRE {X} PERFORMANCE)
+
+Alternatively, a more _efficient_ query would narrow down the tuples in `THEATRE`:
+
+[.relational-algebra]
+{pi}[.ras]##Title## ({sigma}[.ras]##City≠Rome## THEATRE {X} PERFORMANCE)
+
+It's now sufficient to remove {r} from the projection of `PERFORMANCE` on `Title`:
+
+[.relational-algebra]
+{pi}[.ras]##Titlte## (PERFORMANCE) - {r}
+
+NOTE: Since `PLAY`'s key is `Title`, which therefore uniquely identifies each play, it could be used in lieu of `PERFORMANCE`, in the query above. It might even be more efficient on account of its lower tuple count.
+--
+
+[WARNING]
+====
+The following query is wrong, as it includes plays that were performed in Rome *and* in other cities, therefore *not exclusively* in Rome:
+
+[.relational-algebra]
+{pi}[.ras]##Title## {sigma}[.ras]##City=Rome## (THEATRE {X} PERFORMANCE)
+====
