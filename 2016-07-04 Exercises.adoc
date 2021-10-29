@@ -32,14 +32,14 @@ NOTE: Multiple theatres, sharing the same name, can be present in different citi
 
 Write *relational algebra expressions* for the following queries:
 
-1. Find the _names_ of the theatres, in *Rome*, where plays by *"Pirandello"* were performed in *2020*.
+1. Find the `Name` of the theatres, in *Rome*, where plays by *"Pirandello"* were performed in *2020*.
 
-2. Get the _names_ of the plays that were performed *exclusively* in Rome's theatres.
+2. Get the `Title` of the plays that were performed *exclusively* in Rome's theatres.
 --
 
 === Answer
 
-We must identify the relations containing the needed data. We require all of them, as:
+Start by identifying the relations that contain needed data. In this case, all of them are required, as:
 
 * `THEATRE` provides both the cities and the theatre names we're after
 * `PLAY` holds data concerning the play's author

@@ -44,7 +44,7 @@ TIP: You can load a sample RelaX dataset with this gist ID: `126fcdb8c1bedc50802
 
 === Answer
 
-We must identify the relations containing the needed data. We require all of them, as:
+Start by identifying the relations that contain needed data. In this case, all of them are required, as:
 
 * `STOCKS` contains the number of stocked units for each product
 * `PRODUCTS` holds the data for products details
