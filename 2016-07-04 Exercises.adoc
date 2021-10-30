@@ -28,7 +28,11 @@ PLAY ([underline]#Title#, Author)
 PERFORMANCE ([underline]#TheatreID#, [underline]#Date#, Title)
 ----
 
-NOTE: Multiple theatres, sharing the same name, can be present in different cities. Bologna and Florence both have a "Teatro Comunale", for example.
+[NOTE]
+====
+* The set of each relation's underlined attributes indicates its *key*
+* Multiple theatres, sharing the same name, can be present in different cities. Bologna and Florence both have a "Teatro Comunale", for example.
+====
 
 Write *relational algebra expressions* for the following queries:
 

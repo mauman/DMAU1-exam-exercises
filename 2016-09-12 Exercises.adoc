@@ -19,7 +19,7 @@ Their translation is ongoing.
 
 [.exercise]
 --
-Consider a database with the following schema, describing athletes appearances and medals at the 2016 Summer Olympics:
+Consider a database with the following schema, describing *athletes appearances and medals at the 2016 Summer Olympics*:
 
 [source, subs="verbatim, quotes"]
 ----
@@ -30,7 +30,7 @@ MEDAL ([underline]##Name##, [underline]##Surname##, [underline]##SportEvent##, G
 
 [NOTE]
 ====
-* Underlined attributes indicate *keys*.
+* The set of each relation's underlined attributes indicates its *key*
 * `APPEARANCE` describes which sporting events athletes took part in
 * `MEDAL` determines which kind of medal athletes have won, one of **G**old, **S**ilver or **B**ronze
 ====

@@ -28,7 +28,11 @@ WAREHOUSES ([underline]#ID#, Address)
 STOCKS ([underline]#ProductID#, [underline]#WarehouseID#, Units)
 ----
 
-NOTE: `STOCKS` instances describe how many _products' units_ are stocked and in which _warehouses_. When a product is stocked, its `Units>=1`.
+[NOTE]
+====
+* The set of each relation's underlined attributes indicates its *key*
+* `STOCKS` instances describe how many _products' units_ are stocked and in which _warehouses_. When a product is stocked, its `Units>=1`.
+====
 
 Write *relational algebra expressions* for the following queries:
 
