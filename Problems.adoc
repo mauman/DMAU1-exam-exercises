@@ -1,0 +1,28 @@
+
+=== Esame #4
+
+[quote]
+Unendo in join ATLETA (dopo la *proiezione* sulla nazionalità che ci interessa) con MEDAGLIA, sappiamo per ogni atleta quali sono le specialità in cui ha vinto una medaglia
+
+Credo non si tratti di proiezione ma di selezione.
+
+=== Esame #5
+
+==== Issue 1
+
+Prof. Marsico wrote:
+
+[quote]
+Trovare nome della fermata di partenza e nome della fermata di arrivo per le tratte che *non hanno corse* tra le ore 14:00 e le ore 18:00
+
+I translated that with a messy:
+
+[quote]
+Find the `Name` of the departure and final stops, referenced by `InitialStopID` and `FinalStopID`, for each bus line that doesn't include *departure times* between 14:00 and 18:00.
+
+Una corsa puó cominciare prima dell'intervallo probito ma finire durante l'intervallo. Abbiamo solo gli orari di partenza a disposizione. Ho tradotto bene l'intenzione del Prof. Marsico?
+
+==== Issue 2
+
+Is there a *rename* missing on page 15, due to incompatible relations in the subtraction?
+
