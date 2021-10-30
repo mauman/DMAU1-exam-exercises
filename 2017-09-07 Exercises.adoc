@@ -1,0 +1,139 @@
+= 2017-09-07 Exam Exercises 
+:icons: font
+:sectnums:
+:sectnumlevels: 2
+:pi: pass:q[[.literal]##π##]
+:sigma: pass:q[[.literal]##σ##]
+:r: pass:q[[.literal]##r##]
+:X: ⨝
+:and: ∧
+
+****
+The following exercises and their solutions were originally authored by _Professor Maria de Marsico_, for the "Basi di Dati" exam session on September, the 7^th^, 2017.
+
+Their translation is ongoing.
+
+****
+
+== Relational Algebra
+
+[.exercise]
+--
+Consider a database with the following schema, describing *inter-city bus routes*:
+
+[source, subs="verbatim, quotes"]
+----
+STOP ([underline]##ID##, Name, Street, City)
+LINE ([underline]##ID##, StartID, EndID)
+ROUTE ([underline]##LineID##, [underline]##StopID##, number)
+TIMETABLE ([underline]##LineID##, [underline]##DepartureTime##)
+----
+
+[NOTE]
+====
+* The set of each relation's underlined attributes indicates its *key*
+* `LINE` describes each bus line by specifying both its departure stop `StartID` and its final stop `EndID`
+* `ROUTE` determines the bus line that stops are part of, along with their ordinal position along that line (1^st^, 2^nd^, etc.)
+* `TIMETABLE` holds the departure times of bus lines; each line can have several departure times as suggested by the composite key
+====
+
+[WARNING]
+====
+Despite sharing the same name, `LINE` and `STOP` `IDs` refer to *different* relations
+====
+
+Write *relational algebra expressions* for the following queries:
+
+1. Find the `Name`, `Street` and `City` of all the bus stops on lines that _start in Rome_ and _end in Tivoli_.
+
+2. Find the `Name` of the departure and final stops, referenced by `StartID` and `EndID`, for each bus line that doesn't include *departure times* between 14:00 and 18:00.
+--
+
+=== Answer
+
+Start by identifying the relations that contain needed data:
+
+* `STOP` points to the cities that host stops, along with their street and name
+* `LINE` lists departure and arrival bus stops
+
+Divide the problem in two tasks:
+
+1. Find the bus lines that start in Rome and those that end in Tivoli
+2. Find the stops along those bus lines
+
+TIP: Several queries lead to a solution. The one that follows is but an example.
+
+[.answer]
+--
+Define two relations that list bus stops in Rome and in Tivoli:
+
+[.relational-algebra]
+[.literal]##StartStops## = {sigma}[.ras]##City=Rome## STOP
+
+[.relational-algebra]
+[.literal]##EndStops## = {sigma}[.ras]##City=Tivoli## STOP
+
+Join the two relations with `LINE` according to matching departure and arrival stops:
+
+[.relational-algebra]
+[.literal]##StartStops## {X}[.ras]##StartStops.ID=StartID## LINE {X}[.ras]##EndID=EndStops.ID## [.literal]##EndStops##
+
+NOTE: Since there are multiple `ID` referring to different relations, one must identify them by prepending the relevant relation's name — _e.g._ `EndStops.ID` rather than `ID`.
+
+This intermediate result holds an instance whose schema includes: StartStop, STOP and EndStop. Single out the lines`' `ID` with a *projection*:
+
+[.relational-algebra]
+[.literal]##Lines## = {pi} [.ras]##LINE.ID## ([.literal]##StartStops## {X}[.ras]##StartStops.ID=StartID## LINE {X}[.ras]##EndID=EndStops.ID## [.literal]##EndStops##)
+
+*Join* `ROUTE` with [.literal]##Lines## to obtain tuples which identify all the stops along the selected lines, then *join* again the result with `STOP` to get the `Name`, `Street` and `City` of the stops:
+
+[.relational-algebra]
+[.literal]##Lines## {X}[.ras]##Lines.ID=LineID## ROUTE {X}[.ras]##StopID=STOP.ID## STOP
+
+NOTE: *Theta-joins* are required as these relations don't share the same attribute names.
+
+Lastly, complete the assignment by *projecting* on `Name`, `Street` and `City`, to get unique stop names and details:
+
+[.relational-algebra]
+{pi}[.ras]##Name, Street, City## ([.literal]##Lines## {X}[.ras]##Lines.ID=LineID## ROUTE {X}[.ras]##StopID=STOP.ID## STOP)
+--
+
+=== Answer
+
+[TIP]
+This class of relational algebra problems is best handled with *subtractions*. The best approach is to find the lines that don't meet the criteria and remove them from the set of all the candidate lines.
+
+[.answer]
+--
+*Select* the lines that include at least one departure in the 14:00 to 18:00 interval:
+
+[.relational-algebra]
+{sigma}[.ras]##DepartureTime≥14:00 {and} DepartureTime≤18:00## TIMETABLE
+
+*Rename* the `LineID` attribute in the relation above:
+
+[.relational-algebra]
+[.literal]##ExcludedLines## = [.literal]##ρ##[.ras]##ID←LineID## {sigma}[.ras]##DepartureTime≥14:00 {and} DepartureTime≤18:00## TIMETABLE
+
+*Project* `ID` on the relation above and on `LINE`, *subtract* the latter from the former to get the set of tuples describing the bus lines we're interested in:
+
+[.relational-algebra]
+[.literal]##IncludedLines## = {pi}[.ras]##ID## (LINE) - {pi}[.ras]##ID## [.literal]##ExcludedLines##
+
+*Join* [.literal]##IncludedLines## with `LINE` to restore data lost during the *projection*, including the IDs of the departure and arrival stops:
+
+[.relational-algebra]
+[.literal]##IncludedLines## = [.literal]##IncludedLines## {X} LINE
+
+*Theta join* the resulting [.literal]##IncludedLines## with `STOP`, so to include stops`' names:
+
+[.relational-algebra] 
+[.literal]##InitialStops## = STOP
+
+[.relational-algebra]
+[.literal]##FinalStops## = STOP
+
+[.relational-algebra]
+{pi}[.ras]##InitialStops.Name, FinalStops.Name## ([.literal]##InitialStops## {X} [.ras]##InitialStops.ID=StartID## [.literal]##IncludedLines## {X} [.ras]##StopID=FinalStops.ID## [.literal]##FinalStops##)
+
+--
