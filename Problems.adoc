@@ -1,14 +1,15 @@
+= Problems
 
-=== Exam #4
+== Exam #4
 
 [quote]
 Unendo in join ATLETA (dopo la *proiezione* sulla nazionalità che ci interessa) con MEDAGLIA, sappiamo per ogni atleta quali sono le specialità in cui ha vinto una medaglia
 
 Credo non si tratti di proiezione ma di selezione.
 
-=== Exam #5
+== Exam #5
 
-==== Issue 1
+=== Issue 1
 
 Prof. Marsico wrote:
 
@@ -22,21 +23,21 @@ Find the `Name` of the departure stop and the final stop for each bus line that 
 
 Una corsa puó cominciare prima dell'intervallo probito ma finire durante l'intervallo. Abbiamo solo gli orari di partenza a disposizione, mentre nel testo si parla di "corse" e non di "partenze". Ho tradotto bene l'intenzione del Prof. Marsico?
 
-==== Issue 2
+=== Issue 2
 
 Is there a *rename* missing on page #15, in the red framed query? Relations seem incompatible.
 
-=== Exam #7
+== Exam #7
 
-==== Issue 1
+=== Issue 1
 I don't fully grasp the database design. Among the issues I can't wrap my head around:
 
 A CALCIATORE can play multiple seasons for a team.
 But CALCIATORE's `Campionato` is not part of the key, so either one `Campionato` value is stored for each footballer (can't be), or `Campionato` must be part of the key.
 
-==== Issue 2
+=== Issue 2
 I think there's one "join" too many in page #6, before the last sigma.
 
-=== Exam #8
+== Exam #8
 
 The exercise instructs us to find orders whose quantities are higher than ten. Doesn't that exclude the value 10 itself? Shouldn't it be `<=10` instead of `<10` next to the first sigma?
