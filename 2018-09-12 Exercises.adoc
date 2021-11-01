@@ -1,0 +1,103 @@
+= 2018-09-12 Exam Exercises 
+:icons: font
+:sectnums:
+:sectnumlevels: 2
+:pi: pass:q[[.literal]##π##]
+:sigma: pass:q[[.literal]##σ##]
+:r: pass:q[[.literal]##r##]
+:X: ⨝
+:and: ∧
+
+****
+The following exercises and their solutions were originally authored by _Professor Maria de Marsico_, for the "Basi di Dati" exam session on September, the 12^th^, 2018.
+
+Their translation is ongoing.
+
+****
+
+== Relational Algebra
+
+[.exercise]
+--
+Consider a database with the following schema, describing *football seasons*:
+
+[source, subs="verbatim, quotes"]
+----
+MATCH ([underline]##ID##, HomeTeam, AwayTeam, Score, Season)
+TEAM ([underline]##ID##, Name, City)
+FOOTBALLER ([underline]##ID##, [underline]##TeamID##, Season, Name)
+GOALS ([underline]##FootballerID##, [underline]##MatchID##, Number)
+----
+
+[NOTE]
+====
+* It's called "football" not "soccer"
+* The set of each relation's underlined attributes indicates its *key*
+* The many `ID` in `MATCH`, `TEAM` and `FOOTBALLER` all refer to *different* items
+* `Season` in `MATCH` and `GOALS` is a string formatted as "2020-2021"
+* A footballer can play for one team only during a given season, but she or he could play for several teams during different seasons
+* `GOALS`’ `Number` is always *positive*, therefore different from 0 — footballers who didn't score don't appear in `GOALS` at all
+====
+
+Write *relational algebra expressions* for the following queries:
+
+* Find the footballers who scored more than one goal, in the same match, during the 2015-2016 season. Return footballers`' `Name`, `ID` and the `Name` of the teams they played for.
+
+* Find the footballers who played for Roma during the 2015-2016 season without ever scoring.
+--
+
+=== Answer
+
+Start by identifying the relations that contain needed data. In this case, all of them are required. It's preferable to *select* tuples _before_ *joining* relations, for efficiency's purposes.
+
+CAUTION: `Season` appears in both `MATCH` and `FOOTBALLER`.
+
+[.answer]
+--
+Let [.literal]##f~1~## describe the times footballers scored more than once during the 2015-2016 season:
+
+[.relational-algebra]
+[.literal]##f~1~## = {sigma}[.ras]##Number>1## GOALS {X}[.ras]##MatchID=ID## {sigma}[.ras]##Season=2015-2016## MATCH
+
+NOTE: To ensure that goals were scored during the 2015-2016 season, `MATCH` must be queried.
+
+*Join* the previous relation with `FOOTBALLER`, to fetch scorers`' `Name`:
+
+[.relational-algebra]
+[.literal]##f~2~## = [.literal]##f~1~## {X}[.ras]##FootballerID=FOOTBALLER.ID## ({sigma}[.ras]##FOOTBALLER.Season=2015-2016##FOOTBALLER)
+
+*Join* the previous relation with `TEAM` to also get the team's `Name`. Then *project* the needed attributes on the resulting relation:
+
+[.relational-algebra]
+{pi}[.ras]##FOOTBALLER.ID, FOOTBALLER.Name, TEAM.Name## ([.literal]##f~2~## {X}[.ras]##FOOTBALLER.TeamID=TEAM.ID## TEAM)
+--
+
+=== Answer
+
+This class of problems is best handled with *set differences*. Find the 2015-2016 Roma players who *scored at least once*, then remove that relation from the one representing all 2015-2016 Roma players.
+
+[.answer]
+--
+Let [.literal]##r~2015~## gather the footballers who played for _Roma_, during the _2015-2016 season_:
+
+[.relational-algebra]
+[.literal]##r~2015~## = {sigma}[.ras]##Name=Roma## TEAM {X}[.ras]##TEAM.ID=FOOTBALLER.TeamID## {sigma}[.ras]##Season=2015-2016## FOOTBALLER
+
+Find those players who scored at least once among the ones in [.literal]##r~2015~##:
+
+[.relational-algebra]
+[.literal]##s~2015~## = [.literal]##r~2015~## {X}[.ras]##FOOTBALLER.ID=FootballerID## GOALS {X}[.ras]##MatchID=MATCH.ID## {sigma}[.ras]##MATCH.Season=2015-2016## MATCH
+
+[NOTE]
+====
+1. Each tuple in `GOALS` represent a goal scoring event, so *selecting* the number of goals is unnecessary in this case.
+2. `GOALS` contains scoring data for all seasons. `MATCH` holds key data to ensure those goals were scored in 2015-2016.
+====
+
+*Remove* 2015-2016 goal-scoring Roma players from the entire Roma lineup of 2015-2016. *Project* on the required attributes to guarantee the two subtraction operands are compatible:
+
+[.relational-algebra]
+{pi}[.ras]##FOOTBALLER.ID, FOOTBALLER.Name## ([.literal]##r~2015~##) - {pi}[.ras]##FOOTBALLER.ID, FOOTBALLER.Name## ([.literal]##s~2015~##)
+
+--
+
