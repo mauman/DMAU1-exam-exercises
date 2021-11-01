@@ -70,6 +70,8 @@ A more _efficient_ query would entail selecting the relevant tuples _before_ joi
 
 === Answer
 
+Tackle this class of problems by relying on *set differences*. 
+
 The three relations will be included in the query as they all contain relevant data:
 
 * `ATHLETE` includes `Nationality`

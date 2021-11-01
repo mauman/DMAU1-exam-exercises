@@ -89,7 +89,7 @@ r = σ Units >= 10 STOCKS ⨝ WarehouseID = ID WAREHOUSES ⨝ ProductID = PRODUC
 
 === Answer
 
-TIP: This class of relational algebra problems is best handled with *subtractions*. The tuples that _don't_ meet the selection criteria are first collected and then removed from the set of all the candidate tuples.
+TIP: Tackle this class of problems by relying on *set differences*. The tuples that _don't_ meet the selection criteria are first collected and then removed from the set of all the candidate tuples.
 
 In this case we don't need to query the `WAREHOUSES` relation, seeing as it contains no relevant data for our purposes.
 

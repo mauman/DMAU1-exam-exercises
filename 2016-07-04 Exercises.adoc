@@ -77,7 +77,7 @@ The attribute values within `PERFORMANCE` and `THEATRE` are sufficient to obtain
 
 While performing selections, tuples are either included _or_ discarded sequentially. Consider a join between `THEATRE` and `PERFORMANCE`, then a selection based on the resulting tuples' cities; were we to include a tuple whose city is "Rome" and whose title is "King Lear", it wouldn't be possible to remove it when we encounter a subsequent tuple with an equal title but a different city.
 
-TIP: This class of relational algebra problems is best handled with *subtractions*. The tuples that _don't_ meet the selection criteria are first collected and then removed from the set of all the candidate tuples.
+TIP: Tackle this class of problems by relying on *set differences*. The tuples that _don't_ meet the selection criteria are first collected and then removed from the set of all the candidate tuples.
 
 [.answer]
 --
