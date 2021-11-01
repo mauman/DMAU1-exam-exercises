@@ -41,7 +41,7 @@ TIMETABLE ([underline]##LineID##, [underline]##DepartureTime##)
 Write *relational algebra expressions* for the following queries:
 
 1. Find the `Name`, `Street` and `City` of the bus stops on lines that _start in Rome_ and _end in Tivoli_.
-2. Find the `Name` of the departure and final stops for each bus line that doesn't include *departure times* between 14:00 and 18:00.
+2. Find the `Name` of the departure stop and the final stop for each bus line that doesn't include *departures* between 14:00 and 18:00.
 --
 
 === Answer
