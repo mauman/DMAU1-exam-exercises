@@ -1,0 +1,28 @@
+= DMAU1-exam-exercises
+
+This repository contains tentative English translations of exam exercises, stemming from Sapienza's "Basi di dati" course, running from 2015 until 2019.
+
+The original authors include _Professors Marsico_ and _Professor Mancini_.
+
+These files are provided to the students of "Applied Computer Sciences and Artificial Intelligence" attending Prof. Mancini's "Data Management and Analysis, Unit 1" course.
+
+As these translations likely include errors, feedback's welcome.
+
+***
+
+== ADOC
+
+NOTE: plain text `.adoc` files contain the translations`' sources, `adoc` is short for https://docs.asciidoctor.org/asciidoc/latest/syntax-quick-reference/[Asciidoc].
+
+`adoc` files can be read by any browser with the relevant https://chrome.google.com/webstore/detail/asciidoctorjs-live-previe/iaalpfgpbocpdfblpnhhgllgbdbchmia?hl=en[extension].
+
+You can print all the repository's `adoc` files by running `print_all.py`, in this same repository, provided Asciidoctor Web PDF is installed and its path is configured in the script's source.
+
+A sample style sheet is provided.
+
+
+== PDFs
+
+*Download* print-ready PDFs from the https://github.com/silktrader/DMAU1-exam-exercises/releases[release] section.
+
+NOTE: PDFs are produced thanks to https://github.com/Mogztter/asciidoctor-web-pdf[Asciidoctor Web PDF]. 
