@@ -1,0 +1,94 @@
+= 2018-01-22 Exam Exercises 
+:icons: font
+:sectnums:
+:sectnumlevels: 2
+:pi: pass:q[[.literal]##π##]
+:sigma: pass:q[[.literal]##σ##]
+:r: pass:q[[.literal]##r##]
+:X: ⨝
+:and: ∧
+
+****
+The following exercises and their solutions were originally authored by _Professor Maria de Marsico_, for the "Basi di Dati" exam session on January, the 22^nd^, 2018.
+
+Their translation is ongoing.
+
+****
+
+== Relational Algebra
+
+[.exercise]
+--
+Consider a database with the following schema, describing *an e-commerce company's activities*:
+
+[source, subs="verbatim, quotes"]
+----
+PRODUCT ([underline]##ID##, Description, Manufacturer, Price)
+MANUFACTURER([underline]##VATIN##, Name, Address)
+CLIENT([underline]##TaxCode##, Name, Surname, Address, City)
+ORDER([underline]##OrderID##, ClientTaxCode, Date)
+ORDERITEM([underline]##OrderID##, [underline]##ProductID##, Quantity)
+----
+
+[NOTE]
+====
+* The set of each relation's underlined attributes indicates its *key*
+* `VATIN` stands for "Value Added Tax Identification Number"
+* `Manufacturer` within `PRODUCT` refers to the `VATIN` attribute of the supplying `MANUFACTURER`
+====
+
+Provide *relational algebra expressions* for the following queries:
+
+1. Find the articles costing more than 500€ that were ordered by at least one client who didn't reside in Rome. Return all the attributes defined in `ARTICLE`.
+2. Find the products whose ordered quantity _always_ exceeds 10 units. Return manufacturers`' `VATIN`, `Name`, along with the `Description` and `Price` of the articles.
+--
+
+=== Answer
+
+Identifythe relations that contain needed data. In this case, the one and only relation that won't be queried is `MANUFACTURER` as its data are irrelevant for this task.
+
+It's preferable to *select* tuples _before_ *joining* relations, for efficiency's purposes.
+
+[.answer]
+--
+Let [.literal]##r## be the articles costing more than 500€ ordered by clients who weren't in Rome:
+
+[.relational-algebra]
+[.literal]##r## = {sigma}[.ras]##City=Rome## CLIENT {X}[.ras]##TaxCode=ClientTaxCode## ORDER {X} ORDERITEM {X}[.ras]##ProductID=ID## {sigma}[.ras]##Price>500## PRODUCT
+
+NOTE: Since `ORDER` and `ORDERITEM` share the same attribute `ID` they can be *naturally joined*.
+
+An equally valid, but less efficient, *alternative* could be:
+
+[.relational-algebra]
+[.literal]##r## = {sigma}[.ras]##City=Rome {and} Price>500## (CLIENT {X}[.ras]##TaxCode=ClientTaxCode## ORDER {X} ORDERITEM {X}[.ras]##ProductID=ID## PRODUCT)
+
+Finally, *project* the requested attributes on [.literal]##r##:
+
+[.relational-algebra]
+{pi}[.ras]##ID, Description, Manufacturer, Price## ([.literal]##r##) 
+--
+
+=== Answer
+
+Tackle this class of problems by relying on *set differences*. 
+
+WARNING: It's not sufficient to find the products whose ordered quantity exceeds 10, as the result would _also_ include products whose ordered quantity is lower than 10 at least once. This might occur with products ordered twice, in different quantities.
+
+[.answer]
+--
+Let [.literal]##p## be the `ID`s of products whose ordered quantity was less than 10 at least once:
+
+[.relational-algebra]
+[.literal]##p~no~## = {pi}[.ras]##ProductID## ({sigma}[.ras]##Quantity<10## ORDERITEM)
+
+*Subtract* [.literal]##p~no~## from the set of ``ID``s of all the products that were ever ordered:
+
+[.relational-algebra]
+[.literal]##p## = {pi}[.ras]##ProductID## (ORDERITEM) - [.literal]##p~no~##
+
+*Join* the relation above to `PRODUCT` and `MANUFACTURER` to acquire the missing data and *project* on the required attributes:
+
+[.relational-algebra]
+{pi}[.ras]##VATIN, Name, Description, Price## ([.literal]##p## {X}[.ras]##ProductID=ID## PRODUCT {X}[.ras]##Manufacturer=VATIN## MANUFACTURER)
+--
