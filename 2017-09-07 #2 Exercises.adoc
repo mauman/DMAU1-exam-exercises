@@ -1,0 +1,90 @@
+= 2017-09-07 #2 Exam Exercises 
+:icons: font
+:sectnums:
+:sectnumlevels: 2
+:pi: pass:q[[.literal]##π##]
+:sigma: pass:q[[.literal]##σ##]
+:r: pass:q[[.literal]##r##]
+:X: ⨝
+:and: ∧
+
+****
+The following exercises and their solutions were originally authored by _Professor Maria de Marsico_, for the "Basi di Dati" exam session on September, the 7^th^, 2017.
+
+Their translation is ongoing.
+
+****
+
+== Relational Algebra
+
+[.exercise]
+--
+Consider a database with the following schema, describing *paintings exhibited in museums*:
+
+[source, subs="verbatim, quotes"]
+----
+MUSEUM ([underline]##ID##, Name, Address, Region)
+PAINTER ([underline]##ID##, Name, Surname, ArtName, BirthDate, DeathDate)
+PAINTING ([underline]##ID##, Title, Author, Year, Museum)
+----
+
+[NOTE]
+====
+* The set of each relation's underlined attributes indicates its *key*
+* `Author` within `PAINTING` refers to ``PAINTER```' key `ID`
+* `Museum` within `PAINTING` refers to ``MUSEUM```' key `ID`
+* `Year` within `PAINTING` stands for the year of creation of the painting
+====
+
+Write *relational algebra expressions* for the following queries:
+
+1. Find the paintings by "Caravaggio" that are exhibited in museums across Latium. Return the `Title` of paintings, along with the `Name` and `Address` of the hosting museums.
+2. List the museums in Tuscany where no 15th century paintings are exhibited. Return the `Name` and `Address` of the relevant museums.
+
+TIP: "Caravaggio" is an `ArtName`.
+--
+
+=== Answer
+
+Start by identifying the relations that contain needed data. In this case, all of them are required. Formulate efficient queries by *selecting* relevant tuples _before_ joining relations.
+
+[.answer]
+--
+Let [.literal]##P~C~## be the paintings by Caravaggio:
+
+[.relational-algebra]
+[.literal]##P~C~## = PAINTING {X}[.ras]##Author=Painter.ID## ({sigma}[.ras]##ArtName=Caravaggio## PAINTER)
+
+Let [.literal]##P~CL~## be the paintings by Caravaggio in museums accross Latium:
+
+[.relational-algebra]
+[.literal]##P~CL~## = [.literal]##P~C~## {X}[.ras]##PAINTING.Museum=ID## ({sigma}[.ras]##Region=Latium## MUSEUM)
+
+*Project* the required attributes on the resulting relation:
+
+[.relational-algebra]
+{pi}[.ras]##PAINTING.Name, MUSEUM.Name, MUSEUM.Address## ([.literal]##P~CL~##)
+--
+
+=== Answer
+
+Tackle this class of problems by relying on *set differences*. Find the museums in Tuscany where *at least one* painting from the 15th century is exhibited. Then remove those from all the museums in Tuscany.
+
+[.answer]
+--
+Find the museums located in Tuscany:
+
+[.relational-algebra]
+[.literal]##M~T~## = {sigma}[.ras]##Region=Tuscany## MUSEUM
+
+Find the Tuscan museums where at least one 15th century painting is exhibited:
+
+[.relational-algebra]
+[.literal]##M~T15~## = {sigma}[.ras]##Year>1399 {and} Year<1500## PAINTING {X}[.ras]##Museum=MUSEUM.ID## [.literal]##M~T~##
+
+*Subtract* the Tuscan museums where 15th century paintings are held from the entire set of Tuscan museums. Ensure that the subtraction's operands are compatible by *projecting* on `Name` and `Address`:
+
+[.relational-algebra]
+{pi}[.ras]##Name, Address##([.literal]##M~T~##) - {pi}[.ras]##Name, Address##([.literal]##M~T15~##)
+
+--

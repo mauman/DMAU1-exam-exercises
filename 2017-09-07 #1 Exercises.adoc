@@ -1,4 +1,4 @@
-= 2017-09-07 Exam Exercises 
+= 2017-09-07 #1 Exam Exercises 
 :icons: font
 :sectnums:
 :sectnumlevels: 2
@@ -35,18 +35,13 @@ TIMETABLE ([underline]##LineID##, [underline]##DepartureTime##)
 * `LINE` describes each bus line by specifying both its departure stop `StartID` and its final stop `EndID`
 * `ROUTE` determines the bus line that stops are part of, along with their ordinal position along that line (1^st^, 2^nd^, etc.)
 * `TIMETABLE` holds the departure times of bus lines; each line can have several departure times as suggested by the composite key
-====
-
-[WARNING]
-====
-Despite sharing the same name, `LINE` and `STOP` `IDs` refer to *different* relations
+* `LINE` and `STOP` share an attribute named `ID` which refers to *different* items.
 ====
 
 Write *relational algebra expressions* for the following queries:
 
-1. Find the `Name`, `Street` and `City` of all the bus stops on lines that _start in Rome_ and _end in Tivoli_.
-
-2. Find the `Name` of the departure and final stops, referenced by `StartID` and `EndID`, for each bus line that doesn't include *departure times* between 14:00 and 18:00.
+1. Find the `Name`, `Street` and `City` of the bus stops on lines that _start in Rome_ and _end in Tivoli_.
+2. Find the `Name` of the departure and final stops for each bus line that doesn't include *departure times* between 14:00 and 18:00.
 --
 
 === Answer
@@ -73,14 +68,14 @@ Define two relations that list bus stops in Rome and in Tivoli:
 [.relational-algebra]
 [.literal]##EndStops## = {sigma}[.ras]##City=Tivoli## STOP
 
-Join the two relations with `LINE` according to matching departure and arrival stops:
+*Join* the two relations with `LINE` according to matching departure and arrival stops:
 
 [.relational-algebra]
 [.literal]##StartStops## {X}[.ras]##StartStops.ID=StartID## LINE {X}[.ras]##EndID=EndStops.ID## [.literal]##EndStops##
 
 NOTE: Since there are multiple `ID` referring to different relations, one must identify them by prepending the relevant relation's name — _e.g._ `EndStops.ID` rather than `ID`.
 
-This intermediate result holds an instance whose schema includes: StartStop, STOP and EndStop. Single out the lines`' `ID` with a *projection*:
+This intermediate result holds an instance whose schema includes: StartStop, STOP and EndStop. Single out the bus lines`' `ID` with a *projection*:
 
 [.relational-algebra]
 [.literal]##Lines## = {pi} [.ras]##LINE.ID## ([.literal]##StartStops## {X}[.ras]##StartStops.ID=StartID## LINE {X}[.ras]##EndID=EndStops.ID## [.literal]##EndStops##)
