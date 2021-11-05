@@ -19,7 +19,7 @@ Their translation is ongoing.
 
 [.exercise]
 --
-Consider a database with the following schema, describing theatrical performances:
+Consider a database with the following schema, describing *theatrical performances*:
 
 [source, subs="verbatim, quotes"]
 ----
@@ -36,9 +36,11 @@ PERFORMANCE ([underline]#TheatreID#, [underline]#Date#, Title)
 
 Write *relational algebra expressions* for the following queries:
 
-1. Find the `Name` of the theatres, in *Rome*, where plays by *"Pirandello"* were performed in *2020*.
+1. Find the `Name` of theatres, in *Rome*, where plays by *"Pirandello"* were performed in *2020*.
 
-2. Get the `Title` of the plays that were performed *exclusively* in Rome's theatres.
+2. Get the `Title` of plays that were performed *exclusively* in Rome's theatres.
+
+TIP: Load a sample https://dbis-uibk.github.io/relax/landing[RelaX] dataset with this gist ID: `71dffb88ad0406976b4d04e6adec6beb`
 --
 
 === Answer
@@ -60,10 +62,10 @@ Define [.literal]#r# as the relation stemming from:
 [.relational-algebra]
 {sigma}[.ras]##City=Roma {and} Author=Pirandello {and} Date≥01-01-2020 {and} Date≤31-12-2020## (THEATRE {X} PERFORMANCE {X} PLAY)
 
-Conclude by *projecting* on `Name`, a unique attribute within {r}:
+Conclude by *projecting* on `Name`:
 
 [.relational-algebra]
-{pi}[.ras]##Name## {r}
+{pi}[.ras]##Name## ({r})
 
 Or retrieve {r} more _efficiently_ by *selecting* the relevant tuples _before_ *joining* them:
 
@@ -75,9 +77,18 @@ Or retrieve {r} more _efficiently_ by *selecting* the relevant tuples _before_ *
 
 The attribute values within `PERFORMANCE` and `THEATRE` are sufficient to obtain the plays' titles. `PLAY` is unnecessary, as it contains authors' names.
 
-While performing selections, tuples are either included _or_ discarded sequentially. Consider a join between `THEATRE` and `PERFORMANCE`, then a selection based on the resulting tuples' cities; were we to include a tuple whose city is "Rome" and whose title is "King Lear", it wouldn't be possible to remove it when we encounter a subsequent tuple with an equal title but a different city.
+[CAUTION]
+--
+While performing selections, tuples are either included _or_ discarded sequentially. 
+Consider this *flawed* query:
 
-TIP: Tackle this class of problems by relying on *set differences*. The tuples that _don't_ meet the selection criteria are first collected and then removed from the set of all the candidate tuples.
+[.relational-algebra]
+{r} = {sigma}[.ras]##City=Rome## THEATRE {X} PERFORMANCE
+
+Include *any* performance that took place in Rome, while selecting tuples from `THEATRE {X} PERFORMANCE` — it won't be removed from {r} when another performance, of the same play, in another city, is encountered.
+--
+
+TIP: Tackle this class of problems by relying on *set differences*. Collect the tuples that _don't_ meet the selection criteria and remove them from the set of all the candidate tuples.
 
 [.answer]
 --
@@ -88,19 +99,19 @@ Let us define {r} which gathers the titles of all the plays that *weren't* perfo
 * *project* on `Title`
 
 [.relational-algebra]
-{pi}[.ras]##Title## {sigma}[.ras]##City≠Rome## (THEATRE {X} PERFORMANCE)
+[.literal]##r## = {pi}[.ras]##Title## ({sigma}[.ras]##City≠Rome## (THEATRE {X} PERFORMANCE))
 
-Alternatively, a more _efficient_ query would narrow down the tuples in `THEATRE`:
+Alternatively, a more _efficient_ query would reduce the tuples in `THEATRE` _before_ joining them with `PERFORMANCE`:
 
 [.relational-algebra]
-{pi}[.ras]##Title## ({sigma}[.ras]##City≠Rome## THEATRE {X} PERFORMANCE)
+[.literal]##r## = {pi}[.ras]##Title## ({sigma}[.ras]##City≠Rome## THEATRE {X} PERFORMANCE)
 
 It's now sufficient to remove {r} from the projection of `PERFORMANCE` on `Title`:
 
 [.relational-algebra]
 {pi}[.ras]##Title## (PERFORMANCE) - {r}
 
-NOTE: Since `PLAY`'s key is `Title`, which therefore uniquely identifies each play, it could be used in lieu of `PERFORMANCE`, in the query above. It might even be more efficient on account of its lower tuple count.
+NOTE: Since ``PLAY``'s key is `Title`, which uniquely identifies *each* play, it could be used in lieu of `PERFORMANCE`, in the query above. It might even be more efficient on account of its lower tuple count.
 --
 
 [WARNING]

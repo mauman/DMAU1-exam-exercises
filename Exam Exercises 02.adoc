@@ -43,7 +43,7 @@ Write *relational algebra expressions* for the following queries:
 
 2. Find the `ID`, `Description` and `UnitPrice` of the products that _aren't_ stocked at all, anywhere.
 
-TIP: You can load a sample RelaX dataset with this gist ID: `126fcdb8c1bedc5080270dff5f642186`
+TIP: Load a sample https://dbis-uibk.github.io/relax/landing[RelaX] dataset with this gist ID: `126fcdb8c1bedc5080270dff5f642186`
 --
 
 === Answer
