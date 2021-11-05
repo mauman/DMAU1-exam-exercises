@@ -111,27 +111,18 @@ The following query is wrong, as it includes plays that were performed in Rome *
 {pi}[.ras]##Title## {sigma}[.ras]##City=Rome## (THEATRE {X} PERFORMANCE)
 ====
 
-== Annex
-=== The date format
-In his exercises Prof. Marsico used the widely known dd/mm/yyyy or dd-mm-yyyy format, which: even though more readable, familiar and, depending on the context, useful for some, is otherwise prone to inefficiencies (added complexity for the machine) and human errors.
+==== Alternative Answer
 
-We all know the usual debate but this, because we are trying to work with machines, is a problem which has to be addressed. When working with machinery and stuff that should be read by people from all walks of life (be they dd-mm-yyyy, mm-dd-yyyy or _else_ users) a standard should be chosen: in this case the `ISO 8601`.
-
-=== More efficiency
-The design of the second query suggest that higher performance can be achieved by cutting on the amount of handled data as early as possible. This matter is explored no further, but we are missing on something: theatres usually host the same play multiple times! Thus we can further lower the amount of tuples used in the join operation by doing:
+// provided by Davide "F5" Marincione
+[.answer]
+--
+Define [.literal]##k## as the *join* between `THEATRE` and `PERFORMANCE`:
 
 [.relational-algebra]
-k = THEATRE {X} {pi}[.ras]##TheatreID, Title## (PERFORMANCE)
+[.literal]##k## = THEATRE {X} {pi}[.ras]##TheatreID, Title## (PERFORMANCE)
 
-({pi}[.ras]##Title## ({sigma}[.ras]##City=Rome## k)) - ({pi}[.ras]##Title## ({sigma}[.ras]##City!=Rome## k))
-
-Notice how we are storing in `k` the result of the join between theatres and performances, this is because we can assume this join to be pretty expensive, doing it twice would be inefficient. Another possibility could be:
+*Subtract* the titles of the plays that were performed at least once in Rome from the ones that were never performed in Rome:
 
 [.relational-algebra]
-k = {pi}[.ras]##TheatreID, Title## (PERFORMANCE)
-
-r = {sigma}[.ras]##City=Rome## THEATRE
-
-({pi}[.ras]##Title## (r {X} k)) - ({pi}[.ras]##Title## ( (THEATRE - r) {X} k))
-
-But it's unsure to be faster than the previous.
+{pi}[.ras]##Title## ({sigma}[.ras]##City=Rome## [.literal]##k##) - {pi}[.ras]##Title## ({sigma}[.ras]##City!=Rome## [.literal]##k##)
+--
