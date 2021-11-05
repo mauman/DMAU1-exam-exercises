@@ -73,7 +73,7 @@ Or retrieve {r} more _efficiently_ by *selecting* the relevant tuples _before_ *
 
 === Answer
 
-The attribute values within `PERFORMANCE` and `THEATRE` are sufficient to obtain the plays' titles. `PLAY` is unncessary, as it contains authors' names.
+The attribute values within `PERFORMANCE` and `THEATRE` are sufficient to obtain the plays' titles. `PLAY` is unnecessary, as it contains authors' names.
 
 While performing selections, tuples are either included _or_ discarded sequentially. Consider a join between `THEATRE` and `PERFORMANCE`, then a selection based on the resulting tuples' cities; were we to include a tuple whose city is "Rome" and whose title is "King Lear", it wouldn't be possible to remove it when we encounter a subsequent tuple with an equal title but a different city.
 
@@ -98,7 +98,7 @@ Alternatively, a more _efficient_ query would narrow down the tuples in `THEATRE
 It's now sufficient to remove {r} from the projection of `PERFORMANCE` on `Title`:
 
 [.relational-algebra]
-{pi}[.ras]##Titlte## (PERFORMANCE) - {r}
+{pi}[.ras]##Title## (PERFORMANCE) - {r}
 
 NOTE: Since `PLAY`'s key is `Title`, which therefore uniquely identifies each play, it could be used in lieu of `PERFORMANCE`, in the query above. It might even be more efficient on account of its lower tuple count.
 --
@@ -110,3 +110,28 @@ The following query is wrong, as it includes plays that were performed in Rome *
 [.relational-algebra]
 {pi}[.ras]##Title## {sigma}[.ras]##City=Rome## (THEATRE {X} PERFORMANCE)
 ====
+
+== Annex
+=== The date format
+In his exercises Prof. Marsico used the widely known dd/mm/yyyy or dd-mm-yyyy format, which: even though more readable, familiar and, depending on the context, useful for some, is otherwise prone to inefficiencies (added complexity for the machine) and human errors.
+
+We all know the usual debate but this, because we are trying to work with machines, is a problem which has to be addressed. When working with machinery and stuff that should be read by people from all walks of life (be they dd-mm-yyyy, mm-dd-yyyy or _else_ users) a standard should be chosen: in this case the `ISO 8601`.
+
+=== More efficiency
+The design of the second query suggest that higher performance can be achieved by cutting on the amount of handled data as early as possible. This matter is explored no further, but we are missing on something: theatres usually host the same play multiple times! Thus we can further lower the amount of tuples used in the join operation by doing:
+
+[.relational-algebra]
+k = THEATRE {X} {pi}[.ras]##TheatreID, Title## (PERFORMANCE)
+
+({pi}[.ras]##Title## ({sigma}[.ras]##City=Rome## k)) - ({pi}[.ras]##Title## ({sigma}[.ras]##City!=Rome## k))
+
+Notice how we are storing in `k` the result of the join between theatres and performances, this is because we can assume this join to be pretty expensive, doing it twice would be inefficient. Another possibility could be:
+
+[.relational-algebra]
+k = {pi}[.ras]##TheatreID, Title## (PERFORMANCE)
+
+r = {sigma}[.ras]##City=Rome## THEATRE
+
+({pi}[.ras]##Title## (r {X} k)) - ({pi}[.ras]##Title## ( (THEATRE - r) {X} k))
+
+But it's unsure to be faster than the previous.
