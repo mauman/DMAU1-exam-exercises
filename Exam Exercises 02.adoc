@@ -7,6 +7,7 @@
 :r: pass:q[[.literal]##r##]
 :X: ⨝
 :and: ∧
+:stem:
 
 ****
 The following exercises and their solutions were originally authored by _Professor Maria de Marsico_, for the "Basi di Dati" exam session on June, the 14^th^, 2016.
@@ -118,3 +119,56 @@ NOTE: The initial *projection* ensures that the two relations' schemas are *comp
 PRODUCTS - π ID, Description, UnitPrice (PRODUCTS ⨝ ID = ProductID STOCKS)
 ----
 
+== Relational Theory
+
+[.exercise]
+
+--
+
+Consider the schema R = ABCDEH and the set of functional dependencies:
+[source, subs="verbatim, quotes"]
+----
+F={AC → BD, A → E, B → E, E → D}
+----
+
+1. demonstrate that ACH is a key
+
+2. knowing that ACH is the only key, demonstrate that R is not in 3NF
+
+3. find a decomposition ρ of R, so that each schema in ρ is in 3NF, F is preserved in ρ, and ρ has a loseless join
+
+--
+
+=== Answer
+
+To prove that a set of attributes X is a key of R, we have to check two
+conditions:
+
+a) the closure of X is R
+
+b) there exist no proper subset of X for which a) applies
+
+WARNING: do not forget to demonstrate b)!
+
+we apply the algorithm "computation of X^+^" to X = ACH
+
+Input: R, F, X = ACH
+
+Output: Z = X^+^~F~
+
+latexmath:[Z = X]
+
+latexmath:[S = {A | Y \rightarrow V \^ A \in V \^ Y \subset Z}]
+
+while S Z
+do
+begin
+Z:ZS;
+S:AYV F AV YZ
+end
+end
+
+
+=== Answer
+
+=== Answer
