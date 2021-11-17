@@ -175,6 +175,8 @@ end
 
 latexmath:[$\sum_{n=1}^\infty \frac{1}{2^n}$]
 
+asciimath:[`x/x={(1,if x!=0),(text{undefined},if x=0):}`]
+
 === Answer
 
 === Answer
