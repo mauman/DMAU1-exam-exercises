@@ -159,6 +159,7 @@ Output: Z = X^+^~F~
 latexmath:[Z = X]
 
 latexmath:[S = {A | Y \rightarrow V \^ A \in V \^ Y \subset Z}]
+asciimath:[sqrt(4) = 2]
 
 while S Z
 do
