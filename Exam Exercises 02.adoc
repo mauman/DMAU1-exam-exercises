@@ -169,14 +169,7 @@ S:AYV F AV YZ
 end
 end
 
-[latexmath]
-++++
-\int_0^1 x^n= \frac{1}{n+1}
-++++
-
-latexmath:[$\sum_{n=1}^\infty \frac{1}{2^n}$]
-
-asciimath:[`x/x={(1,if x!=0),(text{undefined},if x=0):}`]
+stem:[[[a,b\],[c,d\]\]((n),(k))].
 
 === Answer
 
