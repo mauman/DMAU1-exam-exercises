@@ -152,22 +152,22 @@ WARNING: do not forget to demonstrate b)!
 
 we apply the algorithm "computation of X^+^" to X = ACH
 
-Input: R, F, X = ACH
-
+[NOTE]
+====
+Input: R, F, X +
 Output: Z = X^+^~F~
 
-latexmath:[Z = X]
+latexmath:[Z = X] +
+latexmath:[S = {A | Y \rightarrow V \land A \in V \land Y \subseteq Z}]
 
-latexmath:[S = {A | Y \rightarrow V \land A \in V \land Y \subset Z}]
-
-while S Z
-do
-begin
-Z:ZS;
-S:AYV F AV YZ
-end
-end
-
+*while* latexmath:[S \not\subset Z] +
+{nbsp} *do* +
+{nbsp}{nbsp} *begin* +
+{nbsp}{nbsp}latexmath:[Z = Z \cup S] +
+{nbsp}{nbsp}latexmath:[S = {A | Y \rightarrow V \land A \in V \land Y \subseteq Z}] +
+{nbsp} *end* +
+*end*
+====
 
 === Answer
 
