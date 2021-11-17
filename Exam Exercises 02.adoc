@@ -7,7 +7,6 @@
 :r: pass:q[[.literal]##r##]
 :X: ⨝
 :and: ∧
-:stem:
 
 ****
 The following exercises and their solutions were originally authored by _Professor Maria de Marsico_, for the "Basi di Dati" exam session on June, the 14^th^, 2016.
@@ -174,6 +173,7 @@ end
 \int_0^1 x^n= \frac{1}{n+1}
 ++++
 
+latexmath:[$\sum_{n=1}^\infty \frac{1}{2^n}$]
 
 === Answer
 
