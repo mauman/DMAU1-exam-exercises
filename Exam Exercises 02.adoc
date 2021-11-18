@@ -169,6 +169,56 @@ latexmath:[S = {A | Y \rightarrow V \land A \in V \land Y \subseteq Z}]
 *end*
 ====
 
+Algorithm execution:
+
+latexmath:[Z = ACH] +
+latexmath:[S = {A | Y \rightarrow V \land A \in V \land Y \subseteq Z} = {B, D, E}]
+
+latexmath:[S \not\subset Z]
+
+*1st iteration*:
+
+latexmath:[Z = Z \cup S = ABCDEH] +
+latexmath:[S = {A | Y \rightarrow V \land A \in V \land Y \subseteq Z} = {B, D, E}]
+
+latexmath:[S \subset Z]
+
+*end*
+
+So, latexmath:[R = (ACH)^+_F]
+
+
+With the same algorithm, we check if the closure of some subset of ACH is
+equal to R. We can avoid some calculations by considering that none of the subsets
+of ACH that do not contain H can be key, as H does not appear in any
+dependency. For the same reason, neither can H be key, as it does not determine any other attribute.
+Thus, it is useless (even if it is not wrong) to calculate the closures of A, of C, of H, and of AC.
+We still have to check the closures of AH and CH.
+Running the algorithm we will have:
+
+latexmath:[(AH)^+_F = {A, H, E, D}] +
+latexmath:[(CH)^+_F = {C, H}]
+
 === Answer
+
+To show that the schema is not in 3NF, it is sufficient to che that all the
+dependencies in F comply with the definition, possibly decomposing the right-hand parts to
+obtain signle attributes.
+
+[NOTE]
+In fact, it is enough to detect even one depency that does not comply
+with the definition to say that the schema is not 3NF!
+
+latexmath:[AC \rightarrow BD \in F] +
+can be decomposed into: +
+latexmath:[AC \rightarrow B \in F] and latexmath:[AC \rightarrow D \in F]
+
+In both cases, AC is not a superkey, it is actually part of a key, and both B and D are not prime,
+so the sceham is not in 3NF.
+
+[NOTE]
+If we used the alternative definition, similar considerations could be applied to the
+same dependency, which is actually a partial dependency, as AC is a proper subset of a key and
+both B and D are not prime.
 
 === Answer
