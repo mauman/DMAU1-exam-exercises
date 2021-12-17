@@ -126,10 +126,9 @@ PRODUCTS - π ID, Description, UnitPrice (PRODUCTS ⨝ ID = ProductID STOCKS)
 --
 
 Consider the schema R = ABCDEH and the set of functional dependencies:
-[source, subs="verbatim, quotes"]
-----
-F={AC → BD, A → E, B → E, E → D}
-----
+
+stem:[F={AC → BD, A → E, B → E, E → D}]
+
 
 1. demonstrate that ACH is a key
 
@@ -152,40 +151,39 @@ WARNING: do not forget to demonstrate b)!
 
 we apply the algorithm "computation of X^+^" to X = ACH
 
-[NOTE]
-====
-Input: R, F, X +
-Output: Z = X^+^~F~
 
-latexmath:[Z = X] +
-latexmath:[S = {A | Y \rightarrow V \land A \in V \land Y \subseteq Z}]
+Input: stem:[R, F, X] +
+Output: stem:[Z = X_F^+]
 
-*while* latexmath:[S \not\subset Z] +
-{nbsp} *do* +
-{nbsp}{nbsp} *begin* +
-{nbsp}{nbsp}latexmath:[Z = Z \cup S] +
-{nbsp}{nbsp}latexmath:[S = {A | Y \rightarrow V \land A \in V \land Y \subseteq Z}] +
-{nbsp} *end* +
+stem:[Z = X] +
+stem:[S = {A | Y rightarrow V ^^ A in V ^^ Y subseteq Z}]
+
+*while* stem:[S] &nsub; stem:[Z] +
+&nbsp;&nbsp; *do* +
+&nbsp;&nbsp; *begin* +
+&nbsp;&nbsp;&nbsp;&nbsp; stem:[Z = Z cup S] +
+&nbsp;&nbsp;&nbsp;&nbsp; stem:[S = {A | Y rightarrow V ^^ A in V ^^ Y subseteq Z}] +
+&nbsp;&nbsp; *end* +
 *end*
-====
+
 
 Algorithm execution:
 
-latexmath:[Z = ACH] +
-latexmath:[S = {A | Y \rightarrow V \land A \in V \land Y \subseteq Z} = {B, D, E}]
+stem:[Z = ACH] +
+stem:[S = {A | Y rightarrow V ^^ A in V ^^ Y subseteq Z} = {B, D, E}]
 
-latexmath:[S \not\subset Z]
+stem:[S] &nsub; stem:[Z]
 
-*1st iteration*:
+1st iteration:
 
-latexmath:[Z = Z \cup S = ABCDEH] +
-latexmath:[S = {A | Y \rightarrow V \land A \in V \land Y \subseteq Z} = {B, D, E}]
+stem:[Z = Z cup S = ABCDEH] +
+stem:[S = {A | Y rightarrow V ^^ A in V ^^ Y subseteq Z} = {B, D, E}]
 
-latexmath:[S \subset Z]
+stem:[S subset Z]
 
 *end*
 
-So, latexmath:[R = (ACH)^+_F]
+So, stem:[(ACH)_F^+ = R]
 
 
 With the same algorithm, we check if the closure of some subset of ACH is
@@ -196,8 +194,8 @@ Thus, it is useless (even if it is not wrong) to calculate the closures of A, of
 We still have to check the closures of AH and CH.
 Running the algorithm we will have:
 
-latexmath:[(AH)^+_F = {A, H, E, D}] +
-latexmath:[(CH)^+_F = {C, H}]
+stem:[(AH)_F^+ = {A, H, E, D}] +
+stem:[(CH)_F^+ = {C, H}]
 
 === Answer
 
@@ -209,9 +207,9 @@ obtain signle attributes.
 In fact, it is enough to detect even one depency that does not comply
 with the definition to say that the schema is not 3NF!
 
-latexmath:[AC \rightarrow BD \in F] +
+stem:[AC rightarrow BD in F] +
 can be decomposed into: +
-latexmath:[AC \rightarrow B \in F] and latexmath:[AC \rightarrow D \in F]
+stem:[AC rightarrow B in F] and stem:[AC rightarrow D in F]
 
 In both cases, AC is not a superkey, it is actually part of a key, and both B and D are not prime,
 so the sceham is not in 3NF.
