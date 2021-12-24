@@ -220,3 +220,80 @@ same dependency, which is actually a partial dependency, as AC is a proper subse
 both B and D are not prime.
 
 === Answer
+
+We need to apply the decomposition algorithm, but first we need to transform F into a minimal cover.
+
+==== Step 1
+
+stem:[AC rightarrow BD] is decomposed into the pair stem:[AC rightarrow B], stem:[AC rightarrow D], so we obtain:
+
+stem:[F={AC → B, AC → D, A → E, B → E, E → D}]
+
+==== Step 2
+
+The determinats of stem:[AC → B] and stem:[AC → D] are composed of two attributes. Let us see if it is possible to reduce them. To do this, we need to compute the closures of A and C, and check if they contain the dependents (B and D).
+
+stem:[(A)_F^+ = {A, E, D}], which does not contain B but does contain D, so we can reduce stem:[AC → D] to stem:[A → D].
+
+stem:[(C)_F^+ = {C}], which contains neither B nor D.
+The result of step 2 is:
+
+stem:[F={AC → B, A → D, A → E, B → E, E → D}]
+
+==== Step 3
+
+For each dependency in F,
+we need to check wether the dependency is redundant. The check consists of computing the closure of the determinant respect to a set from which the dependency is (temporarily) removed.
+
+stem:[AC → B], we consider stem:[F' = {A → D, A → E, B → E, E → D}] and we compute stem:[(AC)_{F'}^+ = {A, C, D,E}], so B is not there and the dependency cannot beremoved.
+
+stem:[A → D], we consider stem:[F' = {AC → B, A → E, B → E, E → D}] and we compute stem:[(A)_{F'}^+ = {A, E, D}], which contains D, so the dependency can be eliminated and we obtain: stem:[F = {AC → B, A → E, B → E, E → D}]
+
+stem:[A → E], we consider stem:[F' = {AC → B, B → E, E → D}] and we compute stem:[(A)_{F'}^+ = {A}], which does not contain E.
+
+stem:[B → E], we consider stem:[F' = {AC → B, A → E, E → D}] and we compute stem:[(B)_{F'}^+ = {B}], which does not contain E.
+
+stem:[E → D], we consider stem:[F' = {AC → B, A → E, B → E}] and we compute stem:[(E)_{F'}^+ = {E}], which does not contain D.
+
+The minimal cover is:
+
+stem:[F = {AC → B, A → E, B → E, E → D}]
+
+==== Decomposition Algorithm
+
+We now apply the decomposition algorithm, with the following input:
+
+stem:[R = ABCDEH]
+
+stem:[F = {AC → B, A → E, B → E, E → D}]
+
+Attribute H is not involved either in the determinant or the dependent of any dependency, so we add it to stem:[rho]:
+
+stem:[rho = {H}]
+
+so, reduced R is:
+
+stem:[R = ABCDE]
+
+None of the dependencies in F uses all the attributes in R, so we skip to the last step, and we add all the dependencies of F as subschemas to stem:[rho]:
+
+stem:[rho = {H, ACB, AE, BE, ED}]
+
+To guarantee a lossless join, we need to one of the keys to stem:[rho], if none of them is already present.
+
+So, the final decomposition is:
+
+stem:[rho = {H, ACB, AE, BE, ED, ACH}]
+
+== Physical organization
+
+Given a file of 747,000 records (NR), with each record occupying 120 bytes (RS), including 33 bytes for the key. Each block contains 2048 bytes (BS). A block pointer occupies 5 bytes (BP). If we organize the file with a primary index (ISAM), in which both the blocks in the main file and the blocks in the index file are at least 80% filled (BF = 0.8):
+
+a) what is the maximum number of blocks we need to use for the main file?
+
+b) what is the maximum number of blocks we need to use for the index file?
+
+c) given the number of blocks in the main and index file computed in a) and b), what is the maximum cost of searching for a record by applying the binary search directly on the main file or on the index file?
+
+=== Answer
+
