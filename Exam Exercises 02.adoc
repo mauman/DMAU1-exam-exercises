@@ -287,13 +287,43 @@ stem:[rho = {H, ACB, AE, BE, ED, ACH}]
 
 == Physical organization
 
-Given a file of 747,000 records (NR), with each record occupying 120 bytes (RS), including 33 bytes for the key. Each block contains 2048 bytes (BS). A block pointer occupies 5 bytes (BP). If we organize the file with a primary index (ISAM), in which both the blocks in the main file and the blocks in the index file are at least 80% filled (BF = 0.8):
+Given a file containing 747000 records (NR), with each record occupying 120 bytes (RS), including 33 bytes for the key. Each block contains 2048 bytes (BS). A block pointer occupies 5 bytes (BP). If we organize the file with a primary index (ISAM), in which both the blocks in the main file and the blocks in the index file are at least 80% filled up (BF = 0.8):
 
-a) what is the maximum number of blocks we need to use for the main file?
+1) what is the maximum number of blocks we need to use for the main file?
 
-b) what is the maximum number of blocks we need to use for the index file?
+2) what is the maximum number of blocks we need to use for the index file?
 
-c) given the number of blocks in the main and index file computed in a) and b), what is the maximum cost of searching for a record by applying the binary search directly on the main file or on the index file?
+3) given the number of blocks in the main and index file computed in a) and b), what is the maximum cost, in terms of number of sequential and/or random accesses, for searching for a record by applying the binary search directly on the main file or on the index file?
 
 === Answer
 
+We obtain the total number of blocks in the main file by first computing the number of records that can be stored in each block. 
+We are asked to find the maximum number of blocks in the main file, which will happen when the blocks are filled up at their minimum capacity (80%):
+
+stem:[NRB = |__ 2048 * 0.8 / 120 __| = 13]
+
+To store 747000 records, we will need the following number of main file blocks:
+
+stem:[NB = |~ 747000 / 13 ~| = 57462]
+
+
+=== Answer
+
+A record in the index will occupy 33 + 5 = 38 bytes (the space needed for a key and a block pointer).
+We are asked to find the maximum number of blocks in the index file, which will happen when the blocks are filled up at their minimum capacity (80%):
+
+stem:[NRBI = |__ 2048 * 0.8 / 38 __| = 43]
+
+To store 57462 index records, we will need the following number of index file blocks:
+
+stem:[NB = |~ 57462 / 43 ~| = 1337]
+
+=== Answer
+
+If we apply the binary search directly on the main file:
+
+stem:[cost_M = |~ log_2 57462 ~| rba = 16 rba]
+
+While, if we apply it on the index file:
+
+stem:[cost_I = |~ log_2 1337 ~| rba + 1 rba = 12 rba]
