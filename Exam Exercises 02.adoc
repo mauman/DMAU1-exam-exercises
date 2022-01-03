@@ -322,8 +322,8 @@ stem:[NB = |~ 57462 / 43 ~| = 1337]
 
 If we apply the binary search directly on the main file:
 
-stem:[cost_M = |~ log_2 57462 ~| rba = 16 rba]
+stem:[C_M = |~ log_2 57462 ~| rba = 16 rba]
 
 While, if we apply it on the index file:
 
-stem:[cost_I = |~ log_2 1337 ~| rba + 1 rba = 12 rba]
+stem:[C_I = |~ log_2 1337 ~| rba + 1 rba = 12 rba]

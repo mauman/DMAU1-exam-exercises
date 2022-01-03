@@ -7,6 +7,7 @@
 :r: pass:q[[.literal]##r##]
 :X: ⨝
 :and: ∧
+:stem:
 
 ****
 The following exercises and their solutions were originally authored by _Professor Maria de Marsico_, for the "Basi di Dati" exam session on July, the 4^th^, 2016.
@@ -137,3 +138,199 @@ Define [.literal]##k## as the *join* between `THEATRE` and `PERFORMANCE`:
 [.relational-algebra]
 {pi}[.ras]##Title## ({sigma}[.ras]##City=Rome## [.literal]##k##) - {pi}[.ras]##Title## ({sigma}[.ras]##City!=Rome## [.literal]##k##)
 --
+
+== Normalization
+
+1. Given the relation schema stem:[R = ABCDEH] and the set of functional dependencies stem:[F = { AB->C, D->AB, C->EA, D->H , EH->C }], say whether the decomposition stem:[rho = { ABCD, ACEH}] preserves F, illustrating the process to obtain the solution.
+
+2. Given the relation scheme stem:[R = ABCDEGH] and the set of functional dependencies stem:[F = {A->CD, GH->E, BD->GH, D->B}], say whether the decomposition stem:[rho = {ACD, ACGH, BDEG}] has a lossless join, illustrating the process to obtain the solution.
+
+=== Answer
+
+We know that that functional dependencies for which the union of determinants and dependents is contained in a subscheme of the decomposition, are always preserved, according to the definition of projection of F onto a subscheme stem:[R_i], i.e., stem:[pi_{R_i}(F) = { X->Y | X -> Y in F^+ ^^ XY subseteq R_i}], and to the fact that the decomposition stem:[rho] preserves stem:[F] if stem:[F equiv G = bigcup_{i=1}^k pi_{R_i}(F)], i.e., the two closures are equal. However, if a dependence in F (which will also be in stem:[F^+ ]) is in one of the projections, it will be in stem:[G], so in stem:[G^+], and therefore will be preserved (this justification should be reported in the exam solution).
+
+We need to verify that the remaining dependencies are preserved, that is, in our case, we need to verify that stem:[D -> H] is preserved.
+
+To check whether stem:[D->H] is preserved, we apply the algorithm that computes the closure of D with respect to the set of dependencies G obtained by decomposing R, and check whether it eventually contains H.
+
+NOTE: the algorithm always terminates (it is not enough to say that the dependency is preserved): the dependency is preserved only if the dependent appears in the closure of the determinant.
+
+Steps of the algorithm:
+
+[.answer]
+--
+stem:[Z = D] +
+stem:[S = emptyset]
+
+initialization of S: +
+stem:[S = S cup (D cap ABCD)_F^+ cap ABCD = emptyset cup (D)_F^+ cap ABCD = ABCDEH cap ABCD = ABCD] +
+stem:[S = ABCD cup (D cap ACEH)_F^+ cap ACEH = ABCD cup (emptyset)_F^+ cap ACEH = ABCD cup emptyset cap ACEH = ABCD]
+
+stem:[S] &nsub; stem:[Z], so we iterate: +
+stem:[Z = Z cup S = ABCD]
+stem:[S = emptyset]
+
+update S: +
+stem:[S = S cup (ABCD cap ABCD)_F^+ cap ABCD = emptyset cup (ABCD)_F^+ cap ABCD = ABCD] +
+stem:[S = ABCD cup (ABCD cap ACEH)_F^+ cap ACEH = ABCD cup (AC)_F^+ cap ACEH = ABCD cup ACE cap ACEH = ABCDE]
+
+stem:[S] &nsub; stem:[Z], so we iterate: +
+stem:[Z = Z cup S = ABCDE]
+stem:[S = emptyset]
+
+update S: +
+stem:[S = S cup (ABCDE cap ABCD)_F^+ cap ABCD = emptyset cup (ABCD)_F^+ cap ABCD = ABCD] +
+stem:[S = ABCD cup (ABCDE cap ACEH)_F^+ cap ACEH = ABCD cup (ACE)_F^+ cap ACEH = ABCD cup ACE cap ACEH = ABCDE]
+
+stem:[S subset Z], so we stop.
+
+--
+
+As stem:[H notin D_G^+], we can say that stem:[rho] does not preserve F.
+
+=== Answer
+
+
+stem:[R = ABCDEGH] +
+stem:[F = {A->CD, GH->E, BD->GH, D->B}] +
+stem:[rho = {ACD, ACGH, BDEG}]
+
+
+Steps of the algorithm:
+
+[.answer]
+--
+
+Table is initialized:
+
+[cols="1,1,1,1,1,1,1,1"]
+|===
+| | A | B | C | D | E | G | H
+
+|ACD | a1 | b12 | a3 | a4 | b15 | b16 | b17
+|ACGH | a1 | b22 | a3 | b24 | b25 | a6 | a7
+|BDEG | b31 | a2 | b33 | a4 | a5 | a6 | b37
+|===
+
+First iteration:
+
+stem:[A ->CD]: first and second tuple are equal on A, so they must be equal on C and C; they are already equal on C but not on D, so we replace b24 with a4;
+
+stem:[GH -> E]: there are no tuples that are equal on GH;
+
+stem:[BD -> GH]: there are no tuples that are equal on BD;
+
+stem:[D -> B]: all the tuples are equal on D, so they must be equal on B too; the third tuple has a "a2" on B, so the remaining 2 will become "a2" as well.
+
+The resulting table is:
+
+[cols="1,1,1,1,1,1,1,1"]
+|===
+| | A | B | C | D | E | G | H
+
+|ACD | a1 | a2 | a3 | a4 | b15 | b16 | b17
+|ACGH | a1 | a2 | a3 | a4 | b25 | a6 | a7
+|BDEG | b31 | a2 | b33 | a4 | a5 | a6 | b37
+|===
+
+The table was updated in the first iteration and there is no tuple with all "a", so we continue.
+
+Second iteration:
+
+stem:[A ->CD]: nothing to be done;
+
+stem:[GH -> E]: no tuples are equal on GH;
+
+stem:[BD -> GH]: all the tuples are equal on BD, so they must be equal on GH too; as there is at least one "a" in both G and H, all the tuple values become "a" on both G and H;
+
+stem:[D -> B]: nothing to be done.
+
+The resulting table is:
+
+[cols="1,1,1,1,1,1,1,1"]
+|===
+| | A | B | C | D | E | G | H
+
+|ACD | a1 | a2 | a3 | a4 | b15 | a6 | a7
+|ACGH | a1 | a2 | a3 | a4 | b25 | a6 | a7
+|BDEG | b31 | a2 | b33 | a4 | a5 | a6 | a7
+|===
+
+The table was updated in the second iteration and there is no tuple with all "a", so we continue.
+
+Third iteration:
+
+stem:[A -> CD]: nothing to be done;
+stem:[GH -> E]: all the tuples are equal on GH, so they must be equal on E too; as the
+third tuple has a "a" on E, then the other two become "a" on E;
+stem:[BD -> GH]: nothing to be done;
+stem:[D -> B]: nothing to be done;
+
+The resulting table is:
+
+[cols="1,1,1,1,1,1,1,1"]
+|===
+| | A | B | C | D | E | G | H
+
+|ACD | a1 | a2 | a3 | a4 | a5 | a6 | a7
+|ACGH | a1 | a2 | a3 | a4 | a5 | a6 | a7
+|BDEG | b31 | a2 | b33 | a4 | a5 | a6 | a7
+|===
+
+The table was updated in the third iteration and there is a tuple with all "a", so we stop and
+we conclude that stem:[rho] has a lossless join.
+
+--
+
+== Physical Organization
+
+Suppose you have a file of 974000 records (NR). Each record occupies
+70 bytes (RS). Each block consists of 2048 bytes (BKS) and a block pointer
+occupies 5 bytes (BP). The file is organized as a hash structure with
+550 buckets (NB).
+Assuming an uniform distribution of the records in the
+buckets,
+what is the average cost to search and retrieve a record from the file?
+
+=== Answer
+We first compute the number of records that can be stored in a bucket (i.e.,
+the bucket size, BS):
+
+stem:[BS = |~ {NR} / {NB} ~| = 1771]
+
+We now find out the number of records that can be stored in a single block:
+
+stem:[RB = |__ (BKS - BP) / {RS} __| = 29]
+
+(we are subtracting BP, as the blocks in a bucket are organized as a linked list,
+so we need some space to store the pointer to the next block).
+
+Then, the number of blocks needed to store a bucket is:
+
+stem:[BB = |~ {BS} / {RB} ~| = 62]
+
+The average cost to searcg and retrieve a record is then one random access plus
+the average of a sequential search in 62 blocks:
+
+stem:[C_{avg} = 1 rba + 31 sba]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
