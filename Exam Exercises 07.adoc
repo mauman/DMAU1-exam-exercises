@@ -54,14 +54,14 @@ It's preferable to *select* tuples _before_ *joining* relations, for efficiency'
 Let [.literal]##r## be the articles costing more than 500€ ordered by clients who weren't in Rome:
 
 [.relational-algebra]
-[.literal]##r## = {sigma}[.ras]##City=Rome## CLIENT {X}[.ras]##TaxCode=ClientTaxCode## ORDER {X} ORDERITEM {X}[.ras]##ProductID=ID## {sigma}[.ras]##Price>500## PRODUCT
+[.literal]##r## = {sigma}[.ras]##City<>Rome## CLIENT {X}[.ras]##TaxCode=ClientTaxCode## ORDER {X} ORDERITEM {X}[.ras]##ProductID=ID## {sigma}[.ras]##Price>500## PRODUCT
 
 NOTE: Since `ORDER` and `ORDERITEM` share the same attribute `ID` they can be *naturally joined*.
 
 An equally valid, but less efficient, *alternative* could be:
 
 [.relational-algebra]
-[.literal]##r## = {sigma}[.ras]##City=Rome {and} Price>500## (CLIENT {X}[.ras]##TaxCode=ClientTaxCode## ORDER {X} ORDERITEM {X}[.ras]##ProductID=ID## PRODUCT)
+[.literal]##r## = {sigma}[.ras]##City<>Rome {and} Price>500## (CLIENT {X}[.ras]##TaxCode=ClientTaxCode## ORDER {X} ORDERITEM {X}[.ras]##ProductID=ID## PRODUCT)
 
 Finally, *project* the requested attributes on [.literal]##r##:
 
